@@ -16,7 +16,7 @@ import { Colors } from "../components/styles";
 import PreviewModal from "../components/PreviewModal";
 import Template from "../components/Template";
 import { useTemplates } from "../context/TemplatesProvider";
-const { brand, darkLight, primary } = Colors;
+const { brand } = Colors;
 
 const WorkoutScreen = ({ navigation, route }) => {
     useEffect(() => {
@@ -31,7 +31,7 @@ const WorkoutScreen = ({ navigation, route }) => {
       }, [route.params?.template]);
 
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
-    const [previewModalData, setPreviewModalData] = useState('')
+    const [previewModalData, setPreviewModalData] = useState({})
 
     const {templates, setTemplates } = useTemplates()
 
@@ -54,6 +54,8 @@ const WorkoutScreen = ({ navigation, route }) => {
     const openCreateTemplateModal = () => {
         navigation.navigate("Create Template Modal")
     }
+
+    // console.log(typeof(previewModalData))
 
     return (
         <SafeAreaView style={styles.container}>

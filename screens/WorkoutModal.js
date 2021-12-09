@@ -16,14 +16,13 @@ import KeyboardAvoidingWrapper from "../components/KeyboardAvoidingWrapper";
 const {brand, darkLight, primary} = Colors;
 
 const WorkoutModal = ({route, navigation}) => {  
-    const { workout, template, isTemplate, fromTemplate, isEdit } = route.params;
+    const { workout, template, fromTemplate, isEdit } = route.params;
     
     const [workoutName, setWorkoutName] = useState('') 
     const [workoutNotes, setWorkoutNotes] = useState('')
     const [exercisesStore, updateExercisesStore] = useState([]);
 
     const {workouts, setWorkouts } = useWorkouts()
-    const {templates, setTemplates } = useTemplates()
 
     //Exercise list hard coded
     let index = 0;
@@ -40,7 +39,7 @@ const WorkoutModal = ({route, navigation}) => {
         {key: index++, label: 'Back Extension'},
         {key: index++, label: 'Back Extension (Machine)'},
         {key: index++, label: 'Bent Over One Arm Row (Dumbbell'},
-        {key: index++, label: 'Bent Over Row (Band) '},
+        {key: index++, label: 'Bent Over Row (Band)'},
         {key: index++, label: 'Bent Over Row (Barbell)'},
         {key: index++, label: 'Bent Over Row (Barbell)'},
         {key: index++, label: 'Bent Over Row - Underhand (Barbell)'},
@@ -147,24 +146,17 @@ const WorkoutModal = ({route, navigation}) => {
         await AsyncStorage.setItem('workouts', JSON.stringify(updatedWorkouts))
     };
 
-    const handleOnSaveTemplate = async (templateName, templateNotes, exercisesStore) => {
-        const template = {id: Date.now(), templateName, templateNotes, exercisesStore, templateCreationDate: Date.now()};
-        const updatedTemplates = [...templates, template];
-        setTemplates(updatedTemplates)
-        await AsyncStorage.setItem('templates', JSON.stringify(updatedTemplates))
-    };
-
     return (
         <KeyboardAvoidingWrapper>
                 <View style={styles.innerContainer}>
                     <TextInput 
-                        placeholder={isTemplate ? "Template Name" : "Workout Name"}
+                        placeholder="Workout Name"
                         style={[styles.textInput, styles.workoutName]}
                         value={fromTemplate ? template.templateName : workoutName} 
                         onChangeText={(text) => handleOnChangeText(text, 'workoutName')}
                     />
                     <TextInput 
-                        placeholder={isTemplate ? "Template Notes" : "Workout Notes"} 
+                        placeholder="Workout Notes"
                         style={[styles.textInput, styles.workoutNotes]} 
                         multiline
                         // defaultValue = {template.templateNotes}
@@ -172,7 +164,7 @@ const WorkoutModal = ({route, navigation}) => {
                         onChangeText={(text) => handleOnChangeText(text, 'workoutNotes')}
                     />
                     <FlatList
-                        data={exercisesStore}
+                        data={template.exercisesStore}
                         renderItem={({item}) => <ExerciseCard
                             exercise={item}   
                         />}

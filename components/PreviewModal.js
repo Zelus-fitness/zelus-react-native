@@ -14,11 +14,17 @@ const PreviewModal = ({isTemplate, template, workout, visible, onClose}) => {
     const {setWorkouts} = useWorkouts()
     const navigation = useNavigation();
 
-    const {exercisesStore} = template;
+    const { exercisesStore } = template;
 
-    let exerciseNames = exercisesStore.map(function(item) {
+    if (exercisesStore) {
+    var exerciseNames = exercisesStore.map(function(item) {
       return item['exerciseName'].trim()
-    });
+    }); }
+
+    // else if(!exercisesStore) {
+    //   exercisesStore = {}
+    // }
+    
 
     const closeModal = () => {
       onClose();
@@ -115,7 +121,7 @@ const PreviewModal = ({isTemplate, template, workout, visible, onClose}) => {
             <View style={styles.modalView}>
               <Text style={styles.modalText}>{isTemplate ? template.templateName : workout.workoutName}</Text>
               <Text style={styles.modalText}>{isTemplate ? template.templateNotes : workout.workoutNotes}</Text>
-              <Text style={styles.modalText}>{isTemplate ? exerciseNames.join(', ') : workout.exerciseStore}</Text>
+              <Text style={styles.modalText}>{exerciseNames ? exerciseNames.join(', ') : ""}</Text>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={closeModal} 

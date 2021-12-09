@@ -3,8 +3,12 @@ import { View, StyleSheet, Text, Dimensions, TouchableOpacity } from 'react-nati
 import { Colors } from './styles';
 
 const Workout = ({item, onPress}) => {
-    const {workoutName, workoutNotes} = item;
+    const {workoutName, workoutNotes, exercisesStore} = item;
     
+    var exerciseNames = exercisesStore.map(function(item) {
+        return item['exerciseName'].trim()
+      });
+
     return (
         <TouchableOpacity 
             onPress={onPress} 
@@ -12,6 +16,7 @@ const Workout = ({item, onPress}) => {
         >
             <Text style={styles.workoutName}numberOfLines={2}> {workoutName}</Text>
             <Text numberOfLines={3}> {workoutNotes}</Text>
+            <Text numberOfLines={3}> {exerciseNames.join(', ')} </Text>
         </TouchableOpacity>
     );
 };
