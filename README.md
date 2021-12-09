@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# Getting Started with Expo App
 
 This project was bootstrapped with Expo, you can follow installation instructions [here](https://docs.expo.dev/get-started/installation/).
 
