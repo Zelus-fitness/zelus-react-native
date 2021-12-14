@@ -14,17 +14,13 @@ const PreviewModal = ({isTemplate, template, workout, visible, onClose}) => {
     const {setWorkouts} = useWorkouts()
     const navigation = useNavigation();
 
-    const { exercisesStore } = template;
+    const { exercisesStore } = isTemplate ? template : workout;
 
     if (exercisesStore) {
-    var exerciseNames = exercisesStore.map(function(item) {
-      return item['exerciseName'].trim()
-    }); }
-
-    // else if(!exercisesStore) {
-    //   exercisesStore = {}
-    // }
-    
+      var exerciseNames = exercisesStore.map(function(item) {
+        return item['exerciseName'].trim()
+      }); 
+    }
 
     const closeModal = () => {
       onClose();

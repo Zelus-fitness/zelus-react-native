@@ -4,10 +4,14 @@ import {
     StyleSheet, 
     Text, 
     View,
-    Button
+    Button,
+    FlatList
 } from "react-native";
 
 import { Colors } from "./styles";
+
+import SetCard from "./SetCard";
+
 
 const styles = StyleSheet.create ({
     card: {
@@ -20,32 +24,59 @@ const styles = StyleSheet.create ({
         flexDirection: "column"
     },
     cardContent: {
-
+        paddingTop: 5,
+    },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     }
 });
 
-const ExerciseCard = ({exercise}) => {
+const ExerciseCard = ({exercise, handleAddSet, handleChangeRepsValue, handleChangeWeightValue}) => {
     // const [exerciseSets, setExerciseSets] = useState([])
-    const {exerciseName} = exercise;
 
     return (
         <View style = {styles.card}>
             <View style = {styles.cardContent}> 
-                <Text>{exerciseName}</Text>
+                <Text>{exercise.exerciseName}</Text>
             </View>
-            {/* <View style = {styles.cardContent}>
-                <Text>{exercise.exerciseType}</Text>
-            </View> */}
-            {/* <FlatList
-                data={exerciseSets}
-                renderItem={({item}) => <SetCard
-                    exercise={item}   
-                />}
-            /> */}
+            <View style = {styles.cardContent}> 
+                <View style = {styles.row} >
+                    <Text>{"Set"}</Text>
+                    <Text>{"Weight"}</Text>
+                    <Text>{"Reps"}</Text>
+                </View>
+            </View>
+
+            <FlatList
+                data={exercise.exerciseDetails}
+                renderItem={({item}) => 
+                    <SetCard
+                        item={item}
+                        exerciseID = {exercise.exerciseID}
+                        handleChangeRepsValue = {handleChangeRepsValue}
+                        handleChangeWeightValue = {handleChangeWeightValue}
+                    // handleOnChange = {handleOnChange}
+                    />  
+                }
+                // keyExtractor={(item) => item.set}
+            />
+
+            {/* {exercise.exerciseDetails.map((item, key) => {
+                return (
+                    <SetCard
+                        set={item.set} 
+                        weight={item.weight}
+                        reps={item.reps}
+                    // handleOnChange = {handleOnChange}
+                    />
+                )
+            })} */}
+
             <Button 
                 title="Add Set"
                 color = {Colors.brand}
-                onPress={() => alert("Add")}
+                onPress={() => handleAddSet(exercise.exerciseID)}
             />
         </View>
     );

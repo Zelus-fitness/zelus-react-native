@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, route } from "react";
 import { 
     View, 
     Text, 
@@ -14,7 +14,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Colors } from "../components/styles";
 
-import WorkoutModal from "./WorkoutModal";
 import Workout from "../components/Workout";
 import { useWorkouts } from "../context/WorkoutsProvider";
 import PreviewModal from "../components/PreviewModal"
@@ -25,6 +24,7 @@ const HistoryScreen = () => {
 
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
     const [previewModalData, setPreviewModalData] = useState('')
+    
     const {workouts, setWorkouts } = useWorkouts()
 
     const openPreviewModal = (workout) => {
@@ -52,18 +52,8 @@ const HistoryScreen = () => {
             <PreviewModal
                 visible={previewModalVisible} 
                 onClose={() => setPreviewModalVisible(false)}
-                // onSave={handleOnSave}
-                // startWorkoutModalVisible={() => setStartWorkoutModalVisible(true)}
-                // fromTemplate={() => setFromTemplate(true)}
                 workout={previewModalData}
             />
-            {/* <StartWorkoutModal 
-                visible={startWorkoutModalVisible}
-                fromTemplate = {fromTemplate}
-                onWorkoutClose={() => setStartWorkoutModalVisible(false)}
-                template = {previewModalTemplate}
-                // onSave={handleOnSave}
-            /> */}
         </SafeAreaView>
     );
 };

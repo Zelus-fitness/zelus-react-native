@@ -5,6 +5,8 @@ import { TextInput, TouchableWithoutFeedback } from "react-native-gesture-handle
 import { Colors } from "../components/styles";
 import ExerciseCard from "../components/ExerciseCard";
 
+import { v4 as uuidv4 } from "uuid";
+
 import { useTemplates } from "../context/TemplatesProvider";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -106,7 +108,89 @@ const CreateTemplateModal = ({route, navigation}) => {
         if(valueFor === 'templateNotes') settemplateNotes(text);
     }
 
-    const onSubmit = () => {
+    const handleAddExercise = (exerciseName) => {
+        const exercise = {
+            exerciseID: uuidv4(), 
+            exerciseName: exerciseName, 
+            exerciseDetails: [{ set: 1, weight: 0, reps: 0 }],
+        }
+        const updatedExercises = [...exercisesStore, exercise]
+        updateExercisesStore(updatedExercises)
+    }
+
+    const handleAddSet = (exerciseID) => {
+        const tempExercisesStore = [...exercisesStore];
+
+        tempExercisesStore.forEach(
+            function (single_exercise) {
+                if (single_exercise.exerciseID === exerciseID) {
+                    var tempobj = single_exercise;
+                    var number_set = single_exercise.exerciseDetails.length + 1;
+                    var tempexercise = single_exercise.exerciseDetails.concat([
+                        { set: number_set, weight: 0, reps: 0 },
+                    ]);
+                    tempobj.exerciseDetails = tempexercise;
+
+                    // single_exercise = tempobj
+
+                    let exercise_object = tempExercisesStore.find((d) => d.exerciseID === tempobj.exerciseID);
+                    Object.assign(exercise_object, tempobj);
+
+                }
+            }
+        )
+        updateExercisesStore(tempExercisesStore)
+        // console.log(exercisesStore)
+    }
+
+    const handleChangeRepsValue = (set, exerciseID, new_reps) => {
+
+        const tempExercisesStore = [...exercisesStore];
+
+        tempExercisesStore.forEach(
+            function (single_exercise) {
+                if (single_exercise.exerciseID === exerciseID) {
+                    details_array = single_exercise.exerciseDetails;
+                    
+                    for (var i = 0; i < details_array.length; i++) {
+                        if (details_array[i].set === set) {
+                            details_array[i].reps = new_reps;
+                        }
+                    }
+
+                    single_exercise.exerciseDetails = details_array;
+                }
+            }
+        )
+        
+        updateExercisesStore(tempExercisesStore)
+        console.log(exercisesStore)
+    }
+
+      const handleChangeWeightValue = (set, exerciseID, new_weight) => {
+        const tempExercisesStore = [...exercisesStore];
+
+        tempExercisesStore.forEach(
+            function (single_exercise) {
+                if (single_exercise.exerciseID === exerciseID) {
+                    details_array = single_exercise.exerciseDetails;
+                    
+                    for (var i = 0; i < details_array.length; i++) {
+                        if (details_array[i].set === set) {
+                            details_array[i].weight = new_weight;
+                        }
+                    }
+
+                    single_exercise.exerciseDetails = details_array;
+                }
+            }
+        )
+        
+        updateExercisesStore(tempExercisesStore)
+        console.log(exercisesStore)
+      }
+
+      const onSubmit = () => {
         if (!templateName.trim() && !templateNotes.trim()) {
             console.log("Please fill in all fields");
         } else {
@@ -114,25 +198,21 @@ const CreateTemplateModal = ({route, navigation}) => {
         }
     }
 
-    const handleUpdateExercisesStore = (exerciseName) => {
-        const exercise = {exerciseName}
-        const updatedExercises = [...exercisesStore, exercise]
-        updateExercisesStore(updatedExercises)
-    }
-
-    const closeModal = () => {
-        navigation.navigate({
-            name: 'Workout Screen',
-            params: { template: {templateName, templateNotes, exercisesStore} },
-            merge: true,
-          });
+    const closeModal = (isEmpty) => {
+        if(isEmpty) {
+            navigation.navigate({
+                name: 'Workout Screen',
+              });
+        } else {
+            navigation.navigate({
+                name: 'Workout Screen',
+                params: { template: {templateName, templateNotes, exercisesStore} },
+                merge: false,
+            });
+        }
         // setTemplateName('');
         // settemplateNotes('');
         // clearExercisesStore();
-    }
-
-    const clearExercisesStore = () => {
-        exercisesStore.length = 0;
     }
 
     return (
@@ -151,22 +231,43 @@ const CreateTemplateModal = ({route, navigation}) => {
                         value={templateNotes}
                         onChangeText={(text) => handleOnChangeText(text, 'templateNotes')}
                     />
+                    {/* {exercisesStore.map((item, key) => {
+                        return (
+                            <ExerciseCard
+                                exercise={item}  
+                                handleAddExercise = {handleAddExercise}
+                                handleAddSet = {handleAddSet}
+                                exercisesStore = {exercisesStore}
+                            // handleOnChange = {handleOnChange}
+                            />
+                        )
+                    })} */}
                     <FlatList
                         data={exercisesStore}
                         renderItem={({item}) => <ExerciseCard
-                            exercise={item}   
+                            exercise={item}  
+                            handleAddExercise = {handleAddExercise}
+                            handleAddSet = {handleAddSet}
+                            exercisesStore = {exercisesStore}
+                            handleChangeRepsValue = {handleChangeRepsValue}
+                            handleChangeWeightValue = {handleChangeWeightValue}
                         />}
+                        keyExtractor={(item, index) => item.exerciseID + index}
                     />
                     <ModalSelector
+                        style={
+                            {paddingTop: 10}
+                        }
                         data={exerciseSelectorData}
                         initValue='Add exercise'
                         onChange={(item)=> {
-                            handleUpdateExercisesStore(exerciseName = item.label)
+                            // setExerciseName(item.label)
+                            handleAddExercise(item.label)
                         }}
                         closeOnChange= {true} 
                     />
                     <Button onPress={onSubmit} title="Save" color = {brand}/>
-                    <Button onPress={closeModal} title="Dismiss" color = {brand}/>
+                    <Button onPress={() => navigation.navigate('Workout Screen')} title="Dismiss" color = {brand}/>
                 </View>
         </KeyboardAvoidingWrapper>
     );

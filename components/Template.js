@@ -6,7 +6,7 @@ const Template = ({item, onPress}) => {
     const {templateName, templateNotes, exercisesStore} = item;
 
     var exerciseNames = exercisesStore.map(function(item) {
-        return item['exerciseName'].trim()
+        return item.exerciseName.trim()
       });
     
     return (

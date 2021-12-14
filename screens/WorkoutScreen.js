@@ -15,7 +15,11 @@ import { Colors } from "../components/styles";
 
 import PreviewModal from "../components/PreviewModal";
 import Template from "../components/Template";
+import Workout from "../components/Workout";
+
 import { useTemplates } from "../context/TemplatesProvider";
+import { useWorkouts } from "../context/WorkoutsProvider";
+
 const { brand } = Colors;
 
 const WorkoutScreen = ({ navigation, route }) => {
@@ -28,12 +32,21 @@ const WorkoutScreen = ({ navigation, route }) => {
                 template.exercisesStore,
             );
         }
-      }, [route.params?.template]);
+        else if (route.params?.workout) {
+            const workout = route.params?.workout
+            handleOnSaveWorkout(
+                workout.workoutName, 
+                workout.workoutNotes, 
+                workout.exercisesStore,
+            );
+        }
+      }, [route.params?.template, route.params?.workout]);
 
     const [previewModalVisible, setPreviewModalVisible] = useState(false);
     const [previewModalData, setPreviewModalData] = useState({})
 
     const {templates, setTemplates } = useTemplates()
+    const {workouts, setWorkouts } = useWorkouts()
 
     const handleOnSaveTemplate = async (templateName, templateNotes, exercisesStore) => {
         const template = {id: Date.now(), templateName, templateNotes, exercisesStore, templateCreationDate: Date.now()};
@@ -42,13 +55,20 @@ const WorkoutScreen = ({ navigation, route }) => {
         await AsyncStorage.setItem('templates', JSON.stringify(updatedTemplates))
     };
 
+    const handleOnSaveWorkout = async (workoutName, workoutNotes, exercisesStore) => {
+        const workout = {id: Date.now(), workoutName, workoutNotes, exercisesStore, workoutCreationDate: Date.now()};
+        const updatedWorkouts = [...workouts, workout];
+        setWorkouts(updatedWorkouts)
+        await AsyncStorage.setItem('workouts', JSON.stringify(updatedWorkouts))
+    };
+
     const openPreviewModal = (template) => {
         setPreviewModalVisible(true)
         setPreviewModalData(template)
     }
 
-    const openWorkoutModal = (isTemplate) => {
-        navigation.navigate("Workout Modal")
+    const openWorkoutModal = (fromTemplate) => {
+        navigation.navigate("Workout Modal", {fromTemplate: fromTemplate})
     }
 
     const openCreateTemplateModal = () => {
