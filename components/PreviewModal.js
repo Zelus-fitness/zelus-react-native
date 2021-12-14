@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { View, StyleSheet, Modal, Text, ScrollView, Button, Pressable, Dimensions } from "react-native";
+import { View, StyleSheet, Modal, Text, FlatList, Button, Pressable, Dimensions } from "react-native";
 import { TextInput, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Colors } from "./styles";
 import { useNavigation } from '@react-navigation/native';
@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTemplates } from "../context/TemplatesProvider";
 import { useWorkouts} from "../context/WorkoutsProvider";
+
+import ExerciseCard from "../components/ExerciseCard";
 
 const PreviewModal = ({isTemplate, template, workout, visible, onClose}) => {     
     const [modalVisible, setModalVisible] = useState(false);
@@ -64,6 +66,7 @@ const PreviewModal = ({isTemplate, template, workout, visible, onClose}) => {
 
     let actionButton;
     let deleteButton;
+    let list;
 
     if (isTemplate == true) {
       // Edit section
@@ -99,6 +102,16 @@ const PreviewModal = ({isTemplate, template, workout, visible, onClose}) => {
           >
             <Text style={styles.textStyle}>Delete</Text>
           </Pressable>
+      // list = 
+      //   <FlatList
+      //     data={isTemplate ? tempate.exercisesStore : workout.exercisesStore}
+      //     renderItem={({item}) => <ExerciseCard
+      //       exercise={item}  
+      //       exercisesStore = {exercisesStore}
+      //       isPreview = {true}
+      //     />}
+      //     keyExtractor={(item, index) => item.exerciseID + index}
+      //   />
     }
   
 
@@ -117,7 +130,17 @@ const PreviewModal = ({isTemplate, template, workout, visible, onClose}) => {
             <View style={styles.modalView}>
               <Text style={styles.modalText}>{isTemplate ? template.templateName : workout.workoutName}</Text>
               <Text style={styles.modalText}>{isTemplate ? template.templateNotes : workout.workoutNotes}</Text>
-              <Text style={styles.modalText}>{exerciseNames ? exerciseNames.join(', ') : ""}</Text>
+              {/* <Text style={styles.modalText}>{exerciseNames ? exerciseNames.join(', ') : ""}</Text> */}
+              <FlatList
+                data={isTemplate ? template.exercisesStore : workout.exercisesStore}
+                showsHorizontalScrollIndicator={false}
+                renderItem={({item, index}) => <ExerciseCard
+                  exercise={item}  
+                  exercisesStore = {exercisesStore}
+                  isPreview = {true}
+                />}
+                keyExtractor={(item, index) => index.toString()}
+              />
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={closeModal} 
@@ -133,7 +156,7 @@ const PreviewModal = ({isTemplate, template, workout, visible, onClose}) => {
     );
   };
 
-const width = Dimensions.get('window').width - 40;
+const width = Dimensions.get('window').width - 100;
 
 
 const styles = StyleSheet.create({
@@ -141,7 +164,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      marginTop: 22
+      marginTop: 22,
     },
     modalView: {
       margin: 20,
@@ -157,7 +180,8 @@ const styles = StyleSheet.create({
       },
       shadowOpacity: 0.25,
       shadowRadius: 4,
-      elevation: 5
+      elevation: 5,
+      maxHeight: Dimensions.get('screen').height - 200
     },
     button: {
       borderRadius: 10,
@@ -169,6 +193,7 @@ const styles = StyleSheet.create({
     },
     buttonClose: {
       backgroundColor: Colors.brand,
+      marginTop: 10
     },
     buttonDelete: {
       backgroundColor: Colors.brand,

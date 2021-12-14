@@ -35,9 +35,8 @@ const CreateTemplateModal = ({route, navigation}) => {
         {key: index++, section: true, label: 'Back'},
         {key: index++, label: 'Back Extension'},
         {key: index++, label: 'Back Extension (Machine)'},
-        {key: index++, label: 'Bent Over One Arm Row (Dumbbell'},
+        {key: index++, label: 'Bent Over One Arm Row (Dumbbell)'},
         {key: index++, label: 'Bent Over Row (Band) '},
-        {key: index++, label: 'Bent Over Row (Barbell)'},
         {key: index++, label: 'Bent Over Row (Barbell)'},
         {key: index++, label: 'Bent Over Row - Underhand (Barbell)'},
         {key: index++, label: 'Chin Up'},
@@ -252,7 +251,7 @@ const CreateTemplateModal = ({route, navigation}) => {
                             handleChangeRepsValue = {handleChangeRepsValue}
                             handleChangeWeightValue = {handleChangeWeightValue}
                         />}
-                        keyExtractor={(item, index) => item.exerciseID + index}
+                        keyExtractor={(item, index) => index.toString()}
                     />
                     <ModalSelector
                         style={

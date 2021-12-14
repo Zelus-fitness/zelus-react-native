@@ -2,6 +2,7 @@ import React, {useState, useContext} from "react";
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CredentialsContext } from "../context/CredentialsContext";
+import * as SecureStore from 'expo-secure-store';
 
 //formik
 import { Form, Formik } from "formik";
@@ -63,13 +64,14 @@ const Login = ({navigation}) => {
         })
             .then((response) => response.json())
             .then((responseData) => {
-                const { success, message } = responseData;
+                const { success, message, token } = responseData;
 
                 if (success != true) {
                     handleMessage(message)
                     console.log(responseData)
                 } else {
                     persistLogin(credentials, message);
+                    saveToken('secure_token', token);
                 }
                 setSubmitting(false);
             })
@@ -86,11 +88,15 @@ const Login = ({navigation}) => {
         setMessageType(type);
     }
 
+    async function saveToken(key, token) {
+        await SecureStore.setItemAsync(key, token);
+    } 
+
     const persistLogin = (credentials, message) => {
-        AsyncStorage.setItem('acredentials', JSON.stringify(credentials))
+        AsyncStorage.setItem('acredentials', JSON.stringify({credentials}))
         .then (() => {
             handleMessage(message);
-            setStoredCredentials(credentials)
+            setStoredCredentials({credentials})
         })
         .catch((error) => {
             console.error(error);

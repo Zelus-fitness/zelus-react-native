@@ -252,7 +252,7 @@ const WorkoutModal = ({route, navigation}) => {
                         closeOnChange= {true} 
                     />
                     <Button onPress={onSubmit} title="Save" color = {brand}/>
-                    <Button onPress={() => navigation.navigate('Workout Screen')} title="Dismiss" color = {brand}/>
+                    <Button onPress={() => navigation.goBack()} title="Dismiss" color = {brand}/>
                 </View>
         </KeyboardAvoidingWrapper>
     );

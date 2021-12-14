@@ -32,8 +32,19 @@ const styles = StyleSheet.create ({
     }
 });
 
-const ExerciseCard = ({exercise, handleAddSet, handleChangeRepsValue, handleChangeWeightValue}) => {
+const ExerciseCard = ({exercise, handleAddSet, handleChangeRepsValue, handleChangeWeightValue, isPreview}) => {
     // const [exerciseSets, setExerciseSets] = useState([])
+
+    let actionButton;
+
+    if (!isPreview) {
+        actionButton = 
+        <Button 
+            title="Add Set"
+            color = {Colors.brand}
+            onPress={() => handleAddSet(exercise.exerciseID)}
+        />
+    }
 
     return (
         <View style = {styles.card}>
@@ -59,6 +70,7 @@ const ExerciseCard = ({exercise, handleAddSet, handleChangeRepsValue, handleChan
                     // handleOnChange = {handleOnChange}
                     />  
                 }
+                keyExtractor={(item, index) => index.toString()}
                 // keyExtractor={(item) => item.set}
             />
 
@@ -73,11 +85,7 @@ const ExerciseCard = ({exercise, handleAddSet, handleChangeRepsValue, handleChan
                 )
             })} */}
 
-            <Button 
-                title="Add Set"
-                color = {Colors.brand}
-                onPress={() => handleAddSet(exercise.exerciseID)}
-            />
+            {actionButton}
         </View>
     );
 };
