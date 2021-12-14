@@ -6,6 +6,7 @@ import {
     View,
     Button
 } from "react-native";
+import { TextInput } from "react-native-gesture-handler";
 
 import { Colors } from "./styles";
 
@@ -13,35 +14,40 @@ const styles = StyleSheet.create ({
     card: {
         borderRadius: 3,
         backgroundColor: '#fff',
-        shadowColor: '#000',
-        shadowOffset: { width: 2, height: 2},
-        shadowOpacity: 0.3,
-        shadowRadius: 3,
-        flexDirection: "column"
+        flexDirection: "column",
+        paddingTop: 5,
     },
     cardContent: {
 
+    },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     }
 });
 
-const SetCard = ({set}) => {
-    // const [exerciseSets, setExerciseSets] = useState([])
-    const {exerciseName} = exercise;
+const SetCard = ({item, handleChangeWeightValue, exerciseID, handleChangeRepsValue}) => {
+    const {set, weight, reps} = item;
 
     return (
         <View style = {styles.card}>
             <View style = {styles.cardContent}> 
-                <Text>{exerciseName}</Text>
+                <View style = {styles.row} >
+                    <Text>{set}</Text>
+                    <TextInput 
+                        keyboardType="number-pad"
+                        value={weight.toString()} 
+                        onChangeText={(text) => handleChangeWeightValue(set, exerciseID, text)}
+                        // backgroundColor='grey'
+                    />
+                    <TextInput 
+                        keyboardType="number-pad"
+                        value={reps.toString()} 
+                        onChangeText={(text) => handleChangeRepsValue(set, exerciseID, text)}
+                        // backgroundColor='grey'
+                    />
+                </View>
             </View>
-            {/* <View style = {styles.cardContent}>
-                <Text>{exercise.exerciseType}</Text>
-            </View> */}
-            {/* <FlatList
-                data={exerciseSets}
-                renderItem={({item}) => <SetCard
-                    exercise={item}   
-                />}
-            /> */}
         </View>
     );
 };
